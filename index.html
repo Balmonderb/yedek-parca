@@ -256,6 +256,76 @@ table.liste tr.secili td { background: #fff1c9 !important; }
 .hava-simdi .der { font-size: 30px; font-weight: 700; }
 .ruzgar-uyari { color: var(--warn); font-weight: 700; }
 @media (max-width: 720px) { .saat-hava { margin-left: 0; } .hava-kart { grid-template-columns: 1fr; } }
+
+/* ---- tarih pilleri ---- */
+.tarih-pil { display: inline-flex; align-items: center; gap: 5px; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.14); border-left: 5px solid #9aa7b4; border-radius: 6px; padding: 2px 9px 2px 7px; white-space: nowrap; }
+.tarih-pil .gun { font-size: 11px; opacity: .8; }
+.tarih-pil.yesil { border-left-color: #3ccf7a; }
+.tarih-pil.sari { border-left-color: #ffcc33; background: rgba(255,204,51,.16); }
+.tarih-pil.kirmizi { border-left-color: #ff5a5a; background: rgba(255,90,90,.2); }
+.tarih-pil.sari .gun, .tarih-pil.kirmizi .gun { opacity: 1; font-weight: 700; }
+/* ---- üst şerit resmi ---- */
+.ust { position: relative; isolation: isolate; }
+.ust::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background-image: var(--ust-resim, none); background-repeat: no-repeat; }
+.ust.ust-santral::before { background-position: left 6px bottom 0; background-size: auto 100%; opacity: .95; }
+.ust.ust-foto::before { background-size: cover; background-position: center; opacity: .4; -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 45%, transparent 85%); mask-image: linear-gradient(90deg, #000 0%, #000 45%, transparent 85%); }
+.ust .marka h1, .ust .marka .rol { text-shadow: 0 1px 3px rgba(0,0,0,.45); }
+.logo-kare.resimli { background: #fff; padding: 2px; overflow: hidden; }
+.logo-kare.resimli img { width: 100%; height: 100%; object-fit: contain; border-radius: inherit; }
+/* ---- ayarlar: tema ---- */
+.tema-sec { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.tema-kart { display: flex; flex-direction: column; gap: 4px; align-items: flex-start; text-align: left; border: 2px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 10px; padding: 10px; }
+.tema-kart.aktif { border-color: var(--brand2); box-shadow: 0 0 0 3px var(--brand-soft); }
+.tema-kart .soluk { font-size: 11.5px; }
+.tema-onizle { display: flex; width: 100%; height: 34px; border-radius: 6px; overflow: hidden; border: 1px solid var(--line); margin-bottom: 4px; }
+.tema-onizle i { flex: 1; }
+.tema-onizle i:first-child { flex: 2; }
+.radyo { display: flex; gap: 8px; align-items: center; margin: 4px 0; }
+.logo-onizle .logo-kare { width: 52px; height: 52px; }
+/* ---- biten stoklar ---- */
+.biten-ust { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+.biten-bilgi { display: grid; gap: 2px; }
+.tablo-sar { max-height: 52vh; overflow: auto; border: 1px solid var(--line); border-radius: 8px; }
+.tablo-sar table.mini th { position: sticky; top: 0; }
+tr.biten-panel td { background: var(--bad-soft); }
+.biten-paylas { margin-top: 12px; display: flex; flex-direction: column; gap: 4px; }
+.biten-paylas label { font-weight: 600; font-size: 12px; }
+.biten-paylas input { padding: 8px 10px; border: 1.5px solid var(--line); border-radius: 7px; background: var(--surface); max-width: 420px; }
+@media (max-width: 720px) { .tema-sec { grid-template-columns: 1fr; } .tarih-pil .gun { display: none; } .ust.ust-santral::before { background-size: auto 96px; background-position: right -60px top 4px; opacity: .8; } }
+
+/* ================= TEMA: GECE ================= */
+html[data-tema="gece"] {
+  --bg: #0f172a; --surface: #172235; --surface2: #1e2b40; --line: #2d3b52; --ink: #e5ebf3; --muted: #93a3b8;
+  --brand: #0b1324; --brand2: #5aa9e6; --brand-soft: #1c3554; --accent: #f4a62a; --accent-soft: #3a2b12;
+  --teal: #2cc3b3; --teal-soft: #12302d; --ok: #3cc073; --ok-soft: #13301f; --warn: #f0954a; --warn-soft: #3a2616;
+  --bad: #ef5d5d; --bad-soft: #3a1a1c; --purple: #a68af0; --purple-soft: #282040; --iml: #33261a;
+  color-scheme: dark;
+}
+html[data-tema="gece"] .bilgi-serit { background: #070d19; }
+html[data-tema="gece"] .bant.sari { color: #ffd98a; border-bottom-color: #6b5420; }
+html[data-tema="gece"] .bant.kirmizi { color: #ffb8b8; border-bottom-color: #6b2a2a; }
+html[data-tema="gece"] .bant.mavi { color: #9cc9f5; border-bottom-color: #2d4f75; }
+html[data-tema="gece"] table.liste th { background: #22324a; }
+html[data-tema="gece"] .alan label { color: var(--muted); }
+html[data-tema="gece"] .kutu-uyari { border-color: #6b4f1c; color: #ffd38a; }
+html[data-tema="gece"] .kutu-hata { border-color: #6b2a2a; color: #ffb3b3; }
+html[data-tema="gece"] .uyari-kutu { color: #ffd38a; }
+html[data-tema="gece"] .btn.vurgu { color: #2a1b00; }
+html[data-tema="gece"] .ayar-nav button.aktif, html[data-tema="gece"] .seg button.aktif, html[data-tema="gece"] .btn.ana { background: #2a5d8f; border-color: #2a5d8f; }
+html[data-tema="gece"] #giris { background: linear-gradient(160deg, #0b1324 0%, #13294a 60%, #0e3b3a 100%); }
+html[data-tema="gece"] .perde { background: rgba(0,0,0,.6); }
+html[data-tema="gece"] input::placeholder { color: #6f8096; }
+/* ================= TEMA: ENDÜSTRİYEL ================= */
+html[data-tema="endustri"] {
+  --bg: #eceeef; --surface: #ffffff; --surface2: #f5f6f6; --line: #d9dddf; --ink: #22292d; --muted: #67737a;
+  --brand: #2f3a40; --brand2: #2f7f8f; --brand-soft: #dfecee; --accent: #f2b705; --accent-soft: #fff6d6;
+  --teal: #2f7f8f; --teal-soft: #dcefef;
+}
+html[data-tema="endustri"] .bilgi-serit { background: #232c31; }
+html[data-tema="endustri"] table.liste th { background: #3b474e; }
+html[data-tema="endustri"] .btn.vurgu { color: #2a2000; }
+html[data-tema="endustri"] #giris { background: linear-gradient(160deg, #2f3a40 0%, #46555c 55%, #2f7f8f 100%); }
+html[data-tema="endustri"] .ust { border-bottom: 4px solid transparent; border-image: repeating-linear-gradient(-45deg, #f2b705 0 12px, #2f3a40 12px 24px) 4; }
 /* ---- mobil / PWA ---- */
 #uygulama { height: 100vh; height: 100dvh; }
 .ust { padding-top: max(10px, env(safe-area-inset-top)); padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); }
@@ -1068,7 +1138,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
     return {
       v: state.v, sheets: state.sheets, items: items, nextId: state.nextId, erp: state.erp,
       sat: cols.talep ? state.sat : { date: state.sat && state.sat.date, sel: (state.sat || {}).sel, rows: [] },
-      people: state.people, userView: state.userView, view: state.view, opts: state.opts, history: []
+      people: state.people, userView: state.userView, view: state.view, opts: state.opts, history: [], gorunum: state.gorunum, biten: state.biten
     };
   }
 
@@ -1175,7 +1245,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
   "use strict";
   var C = window.Core, Seal = window.Seal;
   var MK = "/*" + "V*/";
-  var SURUM = "Sürüm 2026-11-09b · PWA";
+  var SURUM = "Sürüm 2026-11-09c · PWA";
 
   /* ---------- şablon (kendini kaydetmek için) ---------- */
   var TEMPLATE = (function () {
@@ -1261,7 +1331,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
     h += '<div class="satir"><span class="soluk" style="font-size:11px">' + SURUM + "</span><span></span></div>";
     $("giris-bilgi").innerHTML = h;
   }
-  READY.then(girisBilgi, function (e) { $("giris-bilgi").innerHTML = '<div class="uyari-kutu">⚠ ' + esc(e && e.message ? e.message : e) + "<br>İnternet bağlantısını kontrol edip sayfayı yenileyin.</div>"; });
+  READY.then(function () { girisBilgi(); girisGorunum(); }, function (e) { $("giris-bilgi").innerHTML = '<div class="uyari-kutu">⚠ ' + esc(e && e.message ? e.message : e) + "<br>İnternet bağlantısını kontrol edip sayfayı yenileyin.</div>"; });
   $("giris-form").addEventListener("submit", async function (e) {
     e.preventDefault();
     var pw = $("sifre").value; if (!pw) return;
@@ -1364,7 +1434,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
   function renderShell() {
     var a = admin();
     var h = '<div class="ust">' +
-      '<div class="marka"><div class="logo-kare">YP</div><h1>Yedek Parça Paneli</h1><span class="rol" id="rol">' + (a ? (ELEV ? "Admin · geçici" : "Admin") : "Kullanıcı") + "</span></div>" +
+      '<div class="marka">' + markaIc() + "</div>" +
       '<div class="ara">' + ICON.ara + '<input type="search" id="ara" placeholder="Ara: stok kodu, tanım, sistem, raf, çizim no…" autocomplete="off"></div>' +
       '<div class="ust-dugmeler">' +
       (a ? '<button class="btn" id="b-yukle" title="IEB, IZE ve satınalma dosyalarını yükle">⬆ <span class="yazi">Veri Yükle</span></button>' +
@@ -1382,7 +1452,9 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
       '<div class="arac"><div class="cipler" id="cipler"></div><div class="sag">' +
       (a ? '<button class="btn kucuk" id="b-talep" title="Talep girilmesi gereken kalemleri PDF veya Excel olarak al">📄 Talep listesi</button>' +
         '<button class="btn kucuk" id="b-sistem" title="Yeni sistem oluştur ve ilk kalemini ekle">＋ Yeni Sistem</button>' +
+        '<button class="btn kucuk" id="b-biten" title="Önceki IEB/IZE dosyasında olup son dosyada olmayan kalemler">📉 Biten stoklar <span class="rozet" hidden></span></button>' +
         '<button class="btn kucuk" id="b-duzen" title="Tablodaki bilgileri doğrudan düzenle, toplu değişiklik yap">✎ Düzenleme modu</button>' : "") +
+      (!a ? '<button class="btn kucuk" id="b-biten" hidden title="Önceki IEB/IZE dosyasında olup son dosyada olmayan kalemler">📉 Biten stoklar <span class="rozet" hidden></span></button>' : "") +
       (toolOn("sutun") ? '<button class="btn kucuk" id="b-sutun" title="Sütun hizalama">⇔ Sütunlar</button>' : "") +
       '<span id="bilgi"' + (toolOn("sayi") ? "" : " hidden") + "></span>" +
       (toolOn("boyut") ? '<select id="boyut" title="Sayfa başına satır"><option>50</option><option>100</option><option>250</option><option>500</option></select><span id="sayfalama"></span>' : '<span id="sayfalama" hidden></span>') +
@@ -1418,13 +1490,14 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
       $("b-sistem").onclick = function () { openNewSystem(); };
       $("b-talep").onclick = function () { openTalepList(); };
     }
-    updateFormBadge();
+    $("b-biten").onclick = openBiten;
+    updateFormBadge(); gorunumUygula();
   }
   function renderAll() { renderBanners(); renderTabs(); renderChips(); renderTable(); }
   function renderBanners() {
     var m = ENV.meta || {};
     var erpD = S.erp && S.erp.IEB ? S.erp.IEB.date : m.erpDate, izeD = S.erp && S.erp.IZE ? S.erp.IZE.date : m.erpDate, satD = S.sat ? S.sat.date : m.satDate;
-    $("serit").innerHTML = "<span>IEB: <b>" + trDateTime(erpD) + "</b></span><span>IZE: <b>" + trDateTime(izeD) + "</b></span><span>Satınalma: <b>" + trDateTime(satD) + "</b></span>" +
+    $("serit").innerHTML = tarihPil("IEB", erpD, S.erp && S.erp.IEB && S.erp.IEB.file) + tarihPil("IZE", izeD, S.erp && S.erp.IZE && S.erp.IZE.file) + tarihPil("Satınalma", satD, S.sat && S.sat.file) +
       "<span>Son kayıt: <b>" + trDateTime(m.savedAt) + "</b></span>" + '<button type="button" class="saat-hava" id="sh" title="Hava durumu tahmini">' + shHtml() + "</button>";
     $("sh").onclick = openHava;
     var b = [];
@@ -1434,9 +1507,9 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
     var old = Math.min(daysSince(erpD), daysSince(izeD));
     var e1 = daysSince(erpD), e2 = daysSince(izeD), e3 = daysSince(satD), w = [];
     if (e1 >= 7) w.push("IEB " + e1 + " gündür"); if (e2 >= 7) w.push("IZE " + e2 + " gündür"); if (e3 >= 7) w.push("satınalma " + e3 + " gündür");
-    if (w.length) b.push('<div class="bant kirmizi">⏰ Hatırlatma: ' + w.join(", ") + " güncellenmedi. 1 haftadır dosya yüklemesi yapılmadı." + (admin() ? ' <button class="btn kucuk" data-act="yukle">Dosya yükle</button>' : "") + "</div>");
+    if (w.length) b.push('<div class="bant ' + (Math.max(e1, e2, e3) >= 9 ? "kirmizi" : "sari") + '">⏰ Hatırlatma: ' + w.join(", ") + " güncellenmedi." + (admin() ? ' <button class="btn kucuk" data-act="yukle">Dosya yükle</button>' : "") + "</div>");
     if (admin() && m.initPw && !PW_NEW.admin) b.push('<div class="bant mavi">🔑 İlk kurulum şifreleri kullanılıyor. <button class="btn kucuk ana" data-act="sifre">Şifreleri değiştir</button></div>');
-    $("bantlar").innerHTML = b.join("");
+    $("bantlar").innerHTML = b.join(""); bitenRozet();
     $("bantlar").onclick = function (e) {
       var x = e.target.closest("[data-act]"); if (!x) return;
       var a = x.getAttribute("data-act");
@@ -2176,7 +2249,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
   document.addEventListener("drop", function (e) { if (!admin()) return; e.preventDefault(); var f = Array.prototype.slice.call(e.dataTransfer.files || []); if (f.length) loadFiles(f); });
   function readFile(f) { return new Promise(function (res, rej) { var r = new FileReader(); r.onload = function () { res(new Uint8Array(r.result)); }; r.onerror = function () { rej(new Error("Dosya okunamadı")); }; r.readAsArrayBuffer(f); }); }
   async function loadFiles(files) {
-    var done = [], errs = [], satRows = null, satName = "", listWb = null;
+    var done = [], errs = [], satRows = null, satName = "", listWb = null, bitenYeni = false;
     for (var k = 0; k < files.length; k++) {
       var f = files[k];
       busy("<b>" + esc(f.name) + "</b> okunuyor… (" + (k + 1) + "/" + files.length + ")<br><span style='font-weight:400'>Büyük dosyalarda 10–30 saniye sürebilir.</span>");
@@ -2186,8 +2259,10 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
         var d = C.detect(XLSX, wb);
         if (d.type === "erp") {
           var e = C.parseErp(d.rows);
+          var bt = bitenHesapla(e.org, S.erp[e.org], e.rows, f.name);
           S.erp[e.org] = { date: new Date().toISOString(), file: f.name, rows: e.rows };
-          done.push(e.org + ": " + fmt(e.rows.length) + " kod");
+          done.push(e.org + ": " + fmt(e.rows.length) + " kod" + (bt ? ", " + bt.rows.length + " kalemin stoğu bitti" : ""));
+          if (bt) { S.biten = S.biten || {}; S.biten[e.org] = bt; bitenYeni = true; }
           S.history = [{ t: new Date().toISOString(), msg: e.org + " eldeki miktarlar yüklendi (" + f.name + ")" }].concat(S.history || []).slice(0, 10);
         } else if (d.type === "satinalma") { satRows = C.parseSatinalma(XLSX, d.rows); satName = f.name; }
         else if (d.type === "liste") { listWb = wb; }
@@ -2197,6 +2272,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
     busy("");
     if (done.length) { recompute(); markDirty(); renderAll(); }
     if (errs.length) toast(errs.join(" · "), "kotu"); else if (done.length && !satRows) toast("Yüklendi: " + done.join(", ") + ". Kalıcı olması için Kaydet'e basın.", "iyi");
+    if (bitenYeni && bitenSay()) setTimeout(function () { toast("📉 Stoğu biten kalemler var: " + bitenSay() + " kalem. 'Biten stoklar' düğmesinden görebilirsiniz.", ""); }, 2500);
     if (satRows) openSatSelect(satRows, satName);
     if (listWb) restoreFromExcel(listWb);
   }
@@ -2248,7 +2324,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
 
   /* ---------- ayarlar ---------- */
   function openSettings(tab) {
-    var tabs = [["sayfa", "Sayfalar"], ["sistem", "Sistemler"], ["kisi", "İsim listeleri"], ["gorunum", "Görünüm"], ["sat", "Satınalma filtresi"], ["hesap", "Talep hesabı"], ["sifre", "Şifreler"], ["gecmis", "Geçmiş"], ["yedek", "Excel'den geri yükle"], ["aktar", "Eski panelden aktar"], ["kayit", "Kaydetme yöntemi"], ["github", "GitHub"]];
+    var tabs = [["sayfa", "Sayfalar"], ["sistem", "Sistemler"], ["kisi", "İsim listeleri"], ["gorunum", "Görünüm"], ["sat", "Satınalma filtresi"], ["hesap", "Talep hesabı"], ["sifre", "Şifreler"], ["gecmis", "Geçmiş"], ["yedek", "Excel'den geri yükle"], ["aktar", "Eski panelden aktar"], ["kayit", "Kaydetme yöntemi"], ["github", "GitHub"], ["tema", "Tema ve logo"]];
     var m = modal({ head: "<h2>Ayarlar</h2>", body: '<div class="ayar-yer"><div class="ayar-nav">' + tabs.map(function (t) { return '<button data-t="' + t[0] + '">' + t[1] + "</button>"; }).join("") +
       '</div><div class="ayar-ic" id="ayar-ic"></div></div>', focus: false });
     m.el.querySelector(".p-ic").style.padding = "0";
@@ -2261,6 +2337,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
   }
   var SET = {
     github: function (ic) { ghForm(ic); },
+    tema: function (ic) { temaAyar(ic); },
     kayit: function (ic) {
       var md = saveMode();
       ic.innerHTML = '<p style="margin-top:0">Excel ve PDF dosyalarının nasıl kaydedileceği. Bu ayar sadece bu bilgisayarda geçerlidir.</p>' +
@@ -2737,6 +2814,297 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
       el.querySelector("#hv-sifir").onclick = async function (e) { e.preventDefault(); try { localStorage.removeItem("ypp_hava_yer"); } catch (x) {} m.close(); await havaGetir(true); openHava(); };
     };
   }
+
+  /* =====================================================================
+     GÖRÜNÜM: tema, panel adı, logo, üst şerit resmi
+     S.gorunum = { tema, ad, alt, harf, logo (dataURL), resim: "santral" | "foto" | "yok", foto (dataURL) }
+     ===================================================================== */
+  var TEMALAR = [
+    { k: "klasik", ad: "Klasik", ac: "Mevcut lacivert görünüm", renk: ["#1e4e79", "#f4a62a", "#f2f5f9"] },
+    { k: "gece", ad: "Gece", ac: "Koyu tema · göz yormaz", renk: ["#0b1324", "#f4a62a", "#1e293b"] },
+    { k: "endustri", ad: "Endüstriyel", ac: "Grafit + emniyet sarısı", renk: ["#2f3a40", "#f2b705", "#eceeef"] }
+  ];
+  var VARS_AD = "Yedek Parça Paneli", VARS_ALT = "Mekanik Bakım · Kazan ve yardımcı sistemler";
+  var SANTRAL_SVG = "data:image/svg+xml;utf8," + encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 150" preserveAspectRatio="xMinYMax meet">' +
+    '<g fill="#fff" fill-opacity=".13" stroke="#fff" stroke-opacity=".22" stroke-width="1.2">' +
+    // kömür bandı (konveyör)
+    '<path d="M6 146 L96 64 L104 64 L14 146 Z"/>' +
+    '<path d="M14 140 L22 134 M30 125 L38 118 M46 110 L54 103 M62 96 L70 89 M78 81 L86 74" fill="none"/>' +
+    // kazan binası (çelik konstrüksiyon)
+    '<rect x="96" y="22" width="120" height="124"/>' +
+    '<path d="M96 46 H216 M96 70 H216 M96 94 H216 M96 118 H216 M136 22 V146 M176 22 V146" fill="none"/>' +
+    '<path d="M96 22 L136 46 M136 22 L96 46 M176 70 L216 94 M216 70 L176 94 M96 94 L136 118 M136 94 L96 118" fill="none" stroke-opacity=".14"/>' +
+    '<rect x="112" y="8" width="28" height="14"/><rect x="168" y="12" width="22" height="10"/>' +
+    // kazan içi su duvarı / borular
+    '<path d="M144 50 V140 M150 50 V140 M156 50 V140 M162 50 V140 M168 50 V140" fill="none" stroke-opacity=".3"/>' +
+    // türbin binası
+    '<path d="M216 84 L330 76 L330 146 L216 146 Z"/>' +
+    '<path d="M228 96 h18 v14 h-18 z M256 94 h18 v14 h-18 z M284 92 h18 v14 h-18 z" fill-opacity=".2"/>' +
+    // elektrofiltre + baca gazı kanalı
+    '<rect x="338" y="96" width="70" height="50"/><path d="M216 60 H338 V96" fill="none" stroke-width="5" stroke-opacity=".2"/>' +
+    '<path d="M350 96 V146 M364 96 V146 M378 96 V146 M392 96 V146" fill="none" stroke-opacity=".15"/>' +
+    // baca
+    '<path d="M430 146 L436 10 L452 10 L458 146 Z"/>' +
+    '<path d="M435 30 H453 M434 50 H454" fill="none" stroke-opacity=".35" stroke-width="3"/>' +
+    '<path d="M408 120 H432" fill="none" stroke-width="5" stroke-opacity=".2"/>' +
+    // duman
+    '<circle cx="452" cy="2" r="7" fill-opacity=".08" stroke="none"/><circle cx="468" cy="-2" r="9" fill-opacity=".06" stroke="none"/><circle cx="488" cy="-4" r="11" fill-opacity=".04" stroke="none"/>' +
+    // trafo + enerji nakil direği
+    '<rect x="476" y="122" width="26" height="24"/><path d="M540 146 L556 40 L572 146 M547 100 H565 M551 70 H561 M532 60 H580 M536 84 H576 M556 40 V146" fill="none" stroke-opacity=".28"/>' +
+    '<path d="M580 60 Q610 70 640 64 M576 84 Q608 94 640 88" fill="none" stroke-opacity=".18"/>' +
+    '<path d="M0 146.5 H640" fill="none" stroke-opacity=".3"/>' +
+    "</g></svg>");
+  function G() { return (S && S.gorunum) || {}; }
+  function temaUygula(k) {
+    k = TEMALAR.some(function (t) { return t.k === k; }) ? k : "klasik";
+    document.documentElement.setAttribute("data-tema", k);
+    var mc = document.querySelector('meta[name="theme-color"]'); if (mc) mc.setAttribute("content", k === "gece" ? "#0b1324" : k === "endustri" ? "#2f3a40" : "#1e4e79");
+    LS.set("tema_son", k);
+  }
+  temaUygula(LS.get("tema_son", "klasik"));
+  function logoHtml(g) {
+    g = g || {};
+    return g.logo ? '<div class="logo-kare resimli"><img src="' + esc(g.logo) + '" alt=""></div>' : '<div class="logo-kare">' + esc(g.harf || "YP") + "</div>";
+  }
+  function markaIc() {
+    var g = G();
+    return logoHtml(g) + "<h1>" + esc(g.ad || VARS_AD) + '</h1><span class="rol" id="rol">' + (admin() ? (ELEV ? "Admin · geçici" : "Admin") : "Kullanıcı") + "</span>";
+  }
+  function gorunumUygula() {
+    var g = G(), ust = document.querySelector(".ust");
+    temaUygula(g.tema || "klasik");
+    document.title = g.ad || VARS_AD;
+    if (!ust) return;
+    var mk = ust.querySelector(".marka"); if (mk) mk.innerHTML = markaIc();
+    var r = g.resim || "santral";
+    ust.classList.toggle("ust-santral", r === "santral");
+    ust.classList.toggle("ust-foto", r === "foto" && !!g.foto);
+    ust.style.setProperty("--ust-resim", r === "santral" ? 'url("' + SANTRAL_SVG + '")' : r === "foto" && g.foto ? 'url("' + g.foto + '")' : "none");
+  }
+  function girisGorunum() {
+    var g = (ENV && ENV.meta && ENV.meta.gorunum) || {};
+    if (g.tema) temaUygula(g.tema);
+    var u = document.querySelector(".giris-ust"); if (!u) return;
+    var lk = u.querySelector(".logo-kare"); if (lk) lk.outerHTML = logoHtml(g);
+    if (g.ad) { u.querySelector("h1").textContent = g.ad; document.title = g.ad; }
+    if (g.alt) u.querySelector("p").textContent = g.alt;
+  }
+  function resimKucult(file, max, tur, kalite, kare) {
+    return new Promise(function (res, rej) {
+      var fr = new FileReader();
+      fr.onerror = function () { rej(new Error("Resim okunamadı")); };
+      fr.onload = function () {
+        var im = new Image();
+        im.onerror = function () { rej(new Error("Bu resim açılamadı (JPG veya PNG deneyin)")); };
+        im.onload = function () {
+          var w = im.width, h = im.height, s = Math.min(1, max / Math.max(w, h)), cw = Math.round(w * s), ch = Math.round(h * s);
+          var cv = document.createElement("canvas");
+          if (kare) { cv.width = cv.height = max; var k = Math.min(max / w, max / h); cw = Math.round(w * k); ch = Math.round(h * k); }
+          else { cv.width = cw; cv.height = ch; }
+          var cx = cv.getContext("2d");
+          cx.drawImage(im, kare ? (max - cw) / 2 : 0, kare ? (max - ch) / 2 : 0, cw, ch);
+          res(cv.toDataURL(tur, kalite));
+        };
+        im.src = fr.result;
+      };
+      fr.readAsDataURL(file);
+    });
+  }
+  function dosyaSec(accept) {
+    return new Promise(function (res) {
+      var i = document.createElement("input"); i.type = "file"; i.accept = accept;
+      i.onchange = function () { res(i.files && i.files[0] ? i.files[0] : null); };
+      i.click();
+    });
+  }
+  function temaAyar(ic) {
+    var g = (S.gorunum = S.gorunum || {});
+    function degisti(msg) { markDirty(msg); gorunumUygula(); }
+    function ciz() {
+      var r = g.resim || "santral";
+      ic.innerHTML =
+        '<div class="bolum" style="margin-top:0"><h3 style="margin-top:0">Tema</h3><div class="tema-sec">' +
+        TEMALAR.map(function (t) {
+          return '<button type="button" class="tema-kart' + ((g.tema || "klasik") === t.k ? " aktif" : "") + '" data-tema="' + t.k + '"><span class="tema-onizle">' +
+            t.renk.map(function (c) { return '<i style="background:' + c + '"></i>'; }).join("") + "</span><b>" + t.ad + '</b><span class="soluk">' + t.ac + "</span></button>";
+        }).join("") + "</div></div>" +
+        '<div class="bolum"><h3>Panel adı</h3><div class="alanlar">' +
+        '<div class="alan"><label>Başlık</label><input id="g-ad" maxlength="40" value="' + esc(g.ad || VARS_AD) + '"></div>' +
+        '<div class="alan"><label>Giriş ekranı alt yazısı</label><input id="g-alt" maxlength="70" value="' + esc(g.alt || VARS_ALT) + '"></div></div></div>' +
+        '<div class="bolum"><h3>Logo</h3><div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">' +
+        '<div class="logo-onizle">' + logoHtml(g) + "</div>" +
+        '<button class="btn" id="g-logo">🖼 Logo yükle</button>' + (g.logo ? '<button class="btn" id="g-logo-sil">Logoyu kaldır</button>' : "") +
+        '<label style="display:flex;gap:6px;align-items:center">Harfler <input id="g-harf" maxlength="3" style="width:60px" value="' + esc(g.harf || "YP") + '"' + (g.logo ? " disabled" : "") + "></label></div>" +
+        '<p class="soluk" style="margin-bottom:0">Kare ya da yuvarlak bir PNG/JPG önerilir; otomatik olarak 128×128 boyutuna küçültülür.</p></div>' +
+        '<div class="bolum"><h3>Üst şerit arka planı</h3>' +
+        '<label class="radyo"><input type="radio" name="g-r" value="santral"' + (r === "santral" ? " checked" : "") + "> Termik santral çizimi (kazan binası, baca, türbin binası)</label>" +
+        '<label class="radyo"><input type="radio" name="g-r" value="foto"' + (r === "foto" ? " checked" : "") + "> Kendi fotoğrafım " + (g.foto ? '<span class="soluk">(yüklü)</span>' : "") + "</label>" +
+        '<label class="radyo"><input type="radio" name="g-r" value="yok"' + (r === "yok" ? " checked" : "") + "> Resim yok</label>" +
+        '<div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn kucuk" id="g-foto">📷 Fotoğraf yükle</button>' + (g.foto ? '<button class="btn kucuk" id="g-foto-sil">Fotoğrafı sil</button>' : "") + "</div>" +
+        '<p class="soluk" style="margin-bottom:0">Santralin kendi fotoğrafını koyabilirsiniz; yazılar okunsun diye otomatik karartılır. Değişiklikler kaydedince (GitHub / HTML) herkeste görünür.</p></div>';
+      ic.querySelector(".tema-sec").onclick = function (e) { var b = e.target.closest("[data-tema]"); if (!b) return; g.tema = b.getAttribute("data-tema"); degisti("Tema: " + b.querySelector("b").textContent); ciz(); };
+      var tAd = null;
+      ic.querySelector("#g-ad").oninput = function () { var v = C.trim(this.value); clearTimeout(tAd); tAd = setTimeout(function () { g.ad = v || VARS_AD; degisti("Panel adı: " + g.ad); }, 400); };
+      ic.querySelector("#g-alt").oninput = function () { var v = C.trim(this.value); clearTimeout(tAd); tAd = setTimeout(function () { g.alt = v || VARS_ALT; degisti("Giriş alt yazısı değişti"); }, 400); };
+      ic.querySelector("#g-harf").oninput = function () { g.harf = C.trim(this.value).toLocaleUpperCase("tr") || "YP"; degisti(); ic.querySelector(".logo-onizle").innerHTML = logoHtml(g); };
+      ic.querySelector("#g-logo").onclick = async function () {
+        var f = await dosyaSec("image/*"); if (!f) return;
+        try { g.logo = await resimKucult(f, 128, "image/png", 1, true); degisti("Logo değişti"); ciz(); } catch (e) { toast(e.message, "kotu"); }
+      };
+      if (ic.querySelector("#g-logo-sil")) ic.querySelector("#g-logo-sil").onclick = function () { delete g.logo; degisti("Logo kaldırıldı"); ciz(); };
+      ic.querySelectorAll('input[name="g-r"]').forEach(function (x) {
+        x.onchange = async function () {
+          if (x.value === "foto" && !g.foto) { var f = await dosyaSec("image/*"); if (!f) { ciz(); return; } try { g.foto = await resimKucult(f, 1600, "image/jpeg", 0.72); } catch (e) { toast(e.message, "kotu"); ciz(); return; } }
+          g.resim = x.value; degisti("Üst şerit resmi değişti"); ciz();
+        };
+      });
+      ic.querySelector("#g-foto").onclick = async function () {
+        var f = await dosyaSec("image/*"); if (!f) return;
+        try { g.foto = await resimKucult(f, 1600, "image/jpeg", 0.72); g.resim = "foto"; degisti("Üst şerit fotoğrafı yüklendi"); ciz(); } catch (e) { toast(e.message, "kotu"); }
+      };
+      if (ic.querySelector("#g-foto-sil")) ic.querySelector("#g-foto-sil").onclick = function () { delete g.foto; if (g.resim === "foto") g.resim = "santral"; degisti("Üst şerit fotoğrafı silindi"); ciz(); };
+    }
+    ciz();
+  }
+
+  /* =====================================================================
+     EXCEL GÜNCELLEME TARİHLERİ (renkli)
+     ===================================================================== */
+  function yasSinif(iso) { var d = daysSince(iso); return !iso ? "yok" : d >= 9 ? "kirmizi" : d >= 7 ? "sari" : "yesil"; }
+  function tarihPil(ad, iso, dosya) {
+    var d = daysSince(iso), cls = yasSinif(iso);
+    var ne = !iso ? "yüklenmedi" : d === 0 ? "bugün" : d + " gün önce";
+    return '<span class="tarih-pil ' + cls + '" title="' + esc(ad + (dosya ? " · " + dosya : "") + " · " + ne + (cls === "sari" ? " · 7 gündür güncellenmedi" : cls === "kirmizi" ? " · 9+ gündür güncellenmedi" : "")) + '">' +
+      ad + " <b>" + (iso ? trDateTime(iso) : "—") + "</b>" + (iso ? ' <span class="gun">' + ne + "</span>" : "") + "</span>";
+  }
+
+  /* =====================================================================
+     STOĞU BİTEN MALZEMELER (IEB / IZE karşılaştırması)
+     S.biten[ORG] = { date, prevDate, file, prevFile, rows: [[kod, öncekiMiktar, tanım, lokasyon, birim, yeniMiktar]] }
+     ===================================================================== */
+  function bitenHesapla(org, prev, yeni, dosya) {
+    if (!prev || !prev.rows || !prev.rows.length) return null;
+    var nm = {}; yeni.forEach(function (r) { nm[r[0]] = r[1]; });
+    var out = [];
+    prev.rows.forEach(function (r) {
+      if (!(r[1] > 0)) return;
+      var q = nm[r[0]];
+      if (q === undefined || !(q > 0)) out.push([r[0], r[1], r[2], r[3], r[4], q === undefined ? null : q]);
+    });
+    var ayni = prev.rows.length === yeni.length && !out.length && prev.rows.every(function (r) { return nm[r[0]] === r[1]; });
+    if (ayni && S.biten && S.biten[org]) return S.biten[org]; // aynı dosya tekrar yüklendiyse eski listeyi koru
+    out.sort(function (a, b) { return a[0] < b[0] ? -1 : 1; });
+    return { date: new Date().toISOString(), prevDate: prev.date, file: dosya, prevFile: prev.file, rows: out };
+  }
+  function panelYeri() {
+    var m = {};
+    S.items.forEach(function (it) { if (it.kod && !m[it.kod]) m[it.kod] = { sayfa: (S.sheets[it.s] || {}).name || "", sis: it.sis || "" }; });
+    return m;
+  }
+  function bitenListe(kap) {
+    var B = S.biten || {}, py = panelYeri(), L = [];
+    ["IEB", "IZE"].forEach(function (o) {
+      if ((kap === "hepsi" || kap === o) && B[o]) B[o].rows.forEach(function (r) {
+        var p = py[r[0]];
+        L.push({ org: o, kod: r[0], onceki: r[1], tan: r[2], lok: r[3], bir: r[4], yeni: r[5], panel: !!p, sayfa: p ? p.sayfa : "", sis: p ? p.sis : "" });
+      });
+    });
+    L.sort(function (a, b) { return (b.panel - a.panel) || (a.org < b.org ? -1 : a.org > b.org ? 1 : a.kod < b.kod ? -1 : 1); });
+    return L;
+  }
+  function bitenSay() { var B = S.biten || {}; return (B.IEB ? B.IEB.rows.length : 0) + (B.IZE ? B.IZE.rows.length : 0); }
+  function bitenRozet() {
+    var b = $("b-biten"); if (!b) return;
+    var n = bitenSay(), r = b.querySelector(".rozet");
+    b.hidden = !admin() && !n;
+    if (r) { r.textContent = n; r.hidden = !n; }
+  }
+  var BITEN_COLS = [["org", "Ambar", 8], ["kod", "Kalem Kodu", 14], ["tan", "Tanım", 55], ["bir", "Birim", 8], ["onceki", "Önceki Miktar", 12], ["yeni", "Yeni Miktar", 11], ["lok", "Lokasyon", 22], ["sayfa", "Paneldeki Sayfa", 16], ["sis", "Sistem", 26]];
+  function bitenXlsx(L) {
+    var B = S.biten || {}, info = ["IEB", "IZE"].filter(function (o) { return B[o]; }).map(function (o) { return o + ": " + trDateTime(B[o].prevDate) + " → " + trDateTime(B[o].date); }).join("   ·   ");
+    var aoa = [["Stoğu biten malzemeler — " + trDateTime(new Date().toISOString())], ["Karşılaştırma: " + info], [], BITEN_COLS.map(function (c) { return c[1]; })];
+    L.forEach(function (x) { aoa.push(BITEN_COLS.map(function (c) { var v = x[c[0]]; return c[0] === "yeni" ? (v === null || v === undefined ? "Listede yok" : v) : v === undefined ? "" : v; })); });
+    var ws = XLSX.utils.aoa_to_sheet(aoa);
+    var HS = { font: { bold: true, color: { rgb: "FFFFFF" } }, fill: { fgColor: { rgb: "1E4E79" } }, alignment: { vertical: "center", wrapText: true } };
+    BITEN_COLS.forEach(function (c, i) { var a = XLSX.utils.encode_cell({ r: 3, c: i }); if (ws[a]) ws[a].s = HS; });
+    if (ws.A1) ws.A1.s = { font: { bold: true, sz: 14 } };
+    L.forEach(function (x, r) { if (x.panel) BITEN_COLS.forEach(function (c, i) { var a = XLSX.utils.encode_cell({ r: r + 4, c: i }); if (ws[a]) ws[a].s = { fill: { fgColor: { rgb: "FDE6E6" } } }; }); });
+    ws["!cols"] = BITEN_COLS.map(function (c) { return { wch: c[2] }; });
+    ws["!autofilter"] = { ref: XLSX.utils.encode_range({ s: { r: 3, c: 0 }, e: { r: 3 + L.length, c: BITEN_COLS.length - 1 } }) };
+    var wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Biten Stoklar");
+    return new Blob([XLSX.write(wb, { bookType: "xlsx", type: "array" })], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+  }
+  function bitenMetin(L, sinir) {
+    var bas = "Stoğu biten malzemeler (" + todayISO().split("-").reverse().join(".") + ")\n" +
+      ["IEB", "IZE"].filter(function (o) { return (S.biten || {})[o]; }).map(function (o) { return o + ": " + trDateTime(S.biten[o].prevDate) + " → " + trDateTime(S.biten[o].date); }).join(" | ") + "\n" +
+      "Toplam " + L.length + " kalem" + (L.some(function (x) { return x.panel; }) ? " (" + L.filter(function (x) { return x.panel; }).length + " tanesi panel listesinde)" : "") + "\n\n";
+    var s = bas, n = 0;
+    for (var i = 0; i < L.length; i++) {
+      var x = L[i], sat = (i + 1) + ") [" + x.org + "] " + x.kod + " - " + x.tan + " - önceki: " + fmt(x.onceki) + " " + (x.bir || "") + (x.panel ? " - Panel: " + x.sayfa + (x.sis ? " / " + x.sis : "") : "") + "\n";
+      if (encodeURIComponent(s + sat).length > sinir) break;
+      s += sat; n++;
+    }
+    if (n < L.length) s += "… ve " + (L.length - n) + " kalem daha (tam liste Excel dosyasında).\n";
+    return s;
+  }
+  function openBiten() {
+    var B = S.biten || {}, kap = "hepsi";
+    if (!B.IEB && !B.IZE) {
+      modal({ size: "dar", head: "<h2>📉 Stoğu biten malzemeler</h2>", body: "<p style='margin-top:0'>Henüz karşılaştırma yok.</p><p style='margin-bottom:0'>Yeni bir <b>IEB</b> veya <b>IZE</b> Excel dosyası yüklediğinizde panel, bir önceki dosyada ambarda olup yeni dosyada olmayan (ya da miktarı 0'a düşen) kalemleri burada listeler.</p>", foot: '<button class="btn ana" data-x>Tamam</button>' });
+      return;
+    }
+    var bilgi = ["IEB", "IZE"].map(function (o) {
+      return B[o] ? "<div><b>" + o + ":</b> " + trDateTime(B[o].prevDate) + " → " + trDateTime(B[o].date) + ' <span class="soluk">(' + B[o].rows.length + " kalem)</span></div>" : "<div><b>" + o + ':</b> <span class="soluk">karşılaştırma yok</span></div>';
+    }).join("");
+    var paylasVar = !!(navigator.canShare && window.File);
+    var m = modal({ head: "<h2>📉 Stoğu biten malzemeler</h2><div class=\"alt\">Önceki IEB/IZE dosyasında ambarda olup son dosyada olmayan ya da miktarı 0'a düşen kalemler</div>",
+      body: '<div class="biten-ust"><div class="biten-bilgi">' + bilgi + '</div><div class="seg" id="bt-kap"><button data-k="hepsi" class="aktif">Tümü</button><button data-k="IEB">IEB</button><button data-k="IZE">IZE</button></div></div>' +
+        '<div id="bt-ic"></div>' +
+        '<div class="biten-paylas"><label>E-posta alıcısı <span class="soluk">(isteğe bağlı, virgülle ayırın)</span></label><input id="bt-mail" type="email" multiple placeholder="ornek@sirket.com.tr" value="' + esc(LS.get("biten_mail", "")) + '"></div>',
+      foot: '<button class="btn" data-x>Kapat</button>' + (paylasVar ? '<button class="btn" id="bt-share" title="Excel dosyasını ekli olarak paylaş (telefonda Outlook / WhatsApp seçilebilir)">📤 Paylaş (Excel ekli)</button>' : "") +
+        '<button class="btn" id="bt-wa" style="background:#25d366;color:#fff;border-color:#25d366">💬 WhatsApp</button><button class="btn" id="bt-mailb" style="background:#0a64ad;color:#fff;border-color:#0a64ad">📧 Outlook</button><button class="btn ana" id="bt-xls">⬇ Excel</button>' });
+    function ciz() {
+      var L = bitenListe(kap);
+      m.q("#bt-ic").innerHTML = !L.length ? '<p class="soluk">Bu seçimde stoğu biten kalem yok. 👍</p>' :
+        '<div class="tablo-sar"><table class="mini"><tr><th>Ambar</th><th>Kalem Kodu</th><th>Tanım</th><th style="text-align:right">Önceki</th><th>Lokasyon</th><th>Panelde</th></tr>' +
+        L.slice(0, 300).map(function (x) {
+          return "<tr" + (x.panel ? ' class="biten-panel"' : "") + "><td>" + x.org + "</td><td><code>" + esc(x.kod) + "</code></td><td>" + esc(x.tan) + '</td><td style="text-align:right">' + fmt(x.onceki) + " " + esc(x.bir || "") +
+            "</td><td>" + esc(x.lok || "") + "</td><td>" + (x.panel ? "<b>" + esc(x.sayfa) + "</b>" + (x.sis ? " · " + esc(x.sis) : "") : '<span class="soluk">—</span>') + "</td></tr>";
+        }).join("") + "</table></div>" + (L.length > 300 ? '<p class="soluk">Önizlemede ilk 300 kalem gösteriliyor; Excel\'de hepsi var.</p>' : "") +
+        '<p class="soluk" style="margin-bottom:0">Kırmızı satırlar panel listenizde olan kalemlerdir (öncelikli takip).</p>';
+    }
+    ciz();
+    m.q("#bt-kap").onclick = function (e) { var b = e.target.closest("[data-k]"); if (!b) return; kap = b.getAttribute("data-k"); m.qa("#bt-kap button").forEach(function (x) { x.classList.toggle("aktif", x === b); }); ciz(); };
+    function alici() { var v = C.trim(m.q("#bt-mail").value); LS.set("biten_mail", v); return v; }
+    function liste() { var L = bitenListe(kap); if (!L.length) toast("Listede kalem yok.", "kotu"); return L; }
+    var ad = function () { return "Stogu_Biten_Malzemeler_" + todayISO() + ".xlsx"; };
+    m.q("#bt-xls").onclick = async function () {
+      var L = liste(); if (!L.length) return;
+      var name = ad(), pick = await pickFile(name, "Excel dosyası", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", ".xlsx"); if (!pick) return;
+      busy("Excel hazırlanıyor…"); await tick();
+      try { var b = bitenXlsx(L); busy(""); await writeOut(pick, b, name, "Excel"); } catch (e) { busy(""); saveError("Dosya oluşturulamadı", e, null, name); }
+    };
+    m.q("#bt-mailb").onclick = function () {
+      var L = liste(); if (!L.length) return;
+      var konu = "Stoğu biten malzemeler – " + todayISO().split("-").reverse().join(".");
+      var govde = "Merhaba,\n\n" + bitenMetin(L, 1500) + "\nİyi çalışmalar.";
+      location.href = "mailto:" + encodeURIComponent(alici()).replace(/%2C/g, ",").replace(/%40/g, "@") + "?subject=" + encodeURIComponent(konu) + "&body=" + encodeURIComponent(govde);
+      if (L.length > 15) toast("Uzun listelerde mailde ilk kalemler yer alır. Tam liste için Excel'i indirip maile ekleyin.", "");
+    };
+    m.q("#bt-wa").onclick = function () {
+      var L = liste(); if (!L.length) return;
+      window.open("https://wa.me/?text=" + encodeURIComponent(bitenMetin(L, 3500)), "_blank");
+    };
+    if (m.q("#bt-share")) m.q("#bt-share").onclick = async function () {
+      var L = liste(); if (!L.length) return;
+      try {
+        var f = new File([bitenXlsx(L)], ad(), { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+        if (!navigator.canShare({ files: [f] })) throw new Error("Bu cihaz dosya paylaşımını desteklemiyor; Excel'i indirip ekleyin.");
+        await navigator.share({ files: [f], title: "Stoğu biten malzemeler", text: bitenMetin(L, 1200) });
+      } catch (e) { if (!e || e.name !== "AbortError") toast(e && e.message ? e.message : String(e), "kotu"); }
+    };
+  }
   /* ---------- kaydet (panel dosyası) ---------- */
   function idb(cb) {
     try { var rq = indexedDB.open("yedek-parca-paneli", 1); rq.onupgradeneeded = function () { rq.result.createObjectStore("h"); }; rq.onsuccess = function () { cb(rq.result); }; rq.onerror = function () { cb(null); }; }
@@ -2753,7 +3121,8 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
   async function buildHtml() {
     var meta = {
       erpDate: [S.erp.IEB && S.erp.IEB.date, S.erp.IZE && S.erp.IZE.date].filter(Boolean).sort()[0] || "",
-      satDate: S.sat ? S.sat.date : "", savedAt: new Date().toISOString(), initPw: !!(ENV.meta && ENV.meta.initPw) && !PW_NEW.admin
+      satDate: S.sat ? S.sat.date : "", savedAt: new Date().toISOString(), initPw: !!(ENV.meta && ENV.meta.initPw) && !PW_NEW.admin,
+      gorunum: { ad: G().ad || "", alt: G().alt || "", harf: G().harf || "", logo: G().logo || "", tema: G().tema || "" }
     };
     var clean = JSON.parse(JSON.stringify(S, function (k, v) { return k === "_s" ? undefined : v; }));
     var env = await Seal.seal(ENV, { DK: KEYS.DK, UK: KEYS.UK, state: clean, userState: C.makeUserState(clean), meta: meta, adminPw: PW_NEW.admin, userPw: PW_NEW.user });

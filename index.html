@@ -242,6 +242,20 @@ table.liste tr.secili td { background: #fff1c9 !important; }
   .perde { padding: 8px; }
 }
 
+
+.saat-hava { margin-left: auto; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.15); color: #fff; border-radius: 14px; padding: 2px 10px; font-size: 12px; display: inline-flex; gap: 10px; align-items: center; font-variant-numeric: tabular-nums; }
+.saat-hava:hover { background: rgba(255,255,255,.2); }
+.saat-hava .sh-saat { font-weight: 700; letter-spacing: .3px; }
+.saat-hava .sh-uyari { color: #ffd27a; font-weight: 700; }
+.hava-kart { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
+.hava-gun { border: 1px solid var(--line); border-radius: 10px; padding: 10px; text-align: center; background: var(--surface2); }
+.hava-gun .ik { font-size: 28px; line-height: 1.2; }
+.hava-gun .sic { font-weight: 700; font-size: 15px; }
+.hava-simdi { display: flex; align-items: center; gap: 14px; }
+.hava-simdi .ik { font-size: 44px; }
+.hava-simdi .der { font-size: 30px; font-weight: 700; }
+.ruzgar-uyari { color: var(--warn); font-weight: 700; }
+@media (max-width: 720px) { .saat-hava { margin-left: 0; } .hava-kart { grid-template-columns: 1fr; } }
 /* ---- mobil / PWA ---- */
 #uygulama { height: 100vh; height: 100dvh; }
 .ust { padding-top: max(10px, env(safe-area-inset-top)); padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); }
@@ -1161,7 +1175,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
   "use strict";
   var C = window.Core, Seal = window.Seal;
   var MK = "/*" + "V*/";
-  var SURUM = "Sürüm 2026-11-09 · PWA";
+  var SURUM = "Sürüm 2026-11-09b · PWA";
 
   /* ---------- şablon (kendini kaydetmek için) ---------- */
   var TEMPLATE = (function () {
@@ -1411,7 +1425,8 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
     var m = ENV.meta || {};
     var erpD = S.erp && S.erp.IEB ? S.erp.IEB.date : m.erpDate, izeD = S.erp && S.erp.IZE ? S.erp.IZE.date : m.erpDate, satD = S.sat ? S.sat.date : m.satDate;
     $("serit").innerHTML = "<span>IEB: <b>" + trDateTime(erpD) + "</b></span><span>IZE: <b>" + trDateTime(izeD) + "</b></span><span>Satınalma: <b>" + trDateTime(satD) + "</b></span>" +
-      "<span>Son kayıt: <b>" + trDateTime(m.savedAt) + "</b></span>";
+      "<span>Son kayıt: <b>" + trDateTime(m.savedAt) + "</b></span>" + '<button type="button" class="saat-hava" id="sh" title="Hava durumu tahmini">' + shHtml() + "</button>";
+    $("sh").onclick = openHava;
     var b = [];
     if (admin() && DIRTY) b.push('<div class="bant sari">⚠ Kaydedilmemiş değişiklikler var. ' +
       (WEB ? '<button class="btn kucuk ana" data-act="github">☁ GitHub\'a yükle</button><button class="btn kucuk" data-act="kaydet">💾 HTML kaydet</button>'
@@ -2642,6 +2657,85 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
       em.q("#ge-ayar").onclick = function () { em.close(); openGhSettings(); };
       em.q("#ge-html").onclick = function () { em.close(); savePanel(); };
     } finally { GH_BUSY = false; }
+  }
+
+  /* ---------- saat + hava durumu (Open-Meteo, anahtar gerektirmez) ---------- */
+  var HAVA_VARSAYILAN = { ad: "Aliağa", lat: 38.7997, lon: 26.9722 };
+  var HAVA = LS.get("hava_son", null), HAVA_T = null;
+  function havaYer() { return LS.get("hava_yer", null) || HAVA_VARSAYILAN; }
+  var WMO = { 0: ["☀️", "Açık"], 1: ["🌤️", "Az bulutlu"], 2: ["⛅", "Parçalı bulutlu"], 3: ["☁️", "Kapalı"], 45: ["🌫️", "Sis"], 48: ["🌫️", "Kırağılı sis"],
+    51: ["🌦️", "Hafif çisenti"], 53: ["🌦️", "Çisenti"], 55: ["🌦️", "Yoğun çisenti"], 56: ["🌧️", "Donan çisenti"], 57: ["🌧️", "Donan çisenti"],
+    61: ["🌧️", "Hafif yağmur"], 63: ["🌧️", "Yağmur"], 65: ["🌧️", "Kuvvetli yağmur"], 66: ["🌧️", "Donan yağmur"], 67: ["🌧️", "Donan yağmur"],
+    71: ["🌨️", "Hafif kar"], 73: ["🌨️", "Kar"], 75: ["❄️", "Yoğun kar"], 77: ["🌨️", "Kar taneleri"], 80: ["🌦️", "Hafif sağanak"], 81: ["🌧️", "Sağanak"], 82: ["⛈️", "Kuvvetli sağanak"],
+    85: ["🌨️", "Kar sağanağı"], 86: ["🌨️", "Yoğun kar sağanağı"], 95: ["⛈️", "Gök gürültülü fırtına"], 96: ["⛈️", "Dolulu fırtına"], 99: ["⛈️", "Dolulu fırtına"] };
+  function wmo(c, gece) { var w = WMO[c] || ["🌡️", "—"]; if (gece && c <= 1) return ["🌙", w[1]]; return w; }
+  function yon(d) { return ["K", "KD", "D", "GD", "G", "GB", "B", "KB"][Math.round(((d || 0) % 360) / 45) % 8]; }
+  var GUN = ["Paz", "Pzt", "Sal", "Çar", "Per", "Cum", "Cmt"], AY = ["Oca", "Şub", "Mar", "Nis", "May", "Haz", "Tem", "Ağu", "Eyl", "Eki", "Kas", "Ara"];
+  var RUZGAR_SINIR = 40; // km/sa — bu değerin üstündeki ani rüzgar (hamle) turuncu gösterilir
+  function saatYazi(d) { return pad(d.getHours()) + ":" + pad(d.getMinutes()) + ":" + pad(d.getSeconds()); }
+  function shHtml() {
+    var d = new Date(), h = '<span class="sh-saat" id="sh-saat">' + saatYazi(d) + "</span><span>" + GUN[d.getDay()] + " " + d.getDate() + " " + AY[d.getMonth()] + "</span>";
+    if (HAVA && HAVA.current) {
+      var c = HAVA.current, w = wmo(c.weather_code, !c.is_day);
+      h += "<span>" + w[0] + " " + Math.round(c.temperature_2m) + "°C</span><span" + (c.wind_gusts_10m >= RUZGAR_SINIR ? ' class="sh-uyari"' : "") + ">💨 " + Math.round(c.wind_speed_10m) + " km/sa " + yon(c.wind_direction_10m) + "</span>";
+    } else h += '<span style="color:#c9d8e6">Hava: —</span>';
+    return h;
+  }
+  function shYenile() { var el = $("sh"); if (el) el.innerHTML = shHtml(); }
+  setInterval(function () { var el = $("sh-saat"); if (!el) return; var d = new Date(); el.textContent = saatYazi(d); if (d.getSeconds() === 0) shYenile(); }, 1000);
+  async function havaGetir(zorla) {
+    var y = havaYer();
+    if (!zorla && HAVA && HAVA.yer === y.ad && Date.now() - (HAVA.t || 0) < 15 * 60000) { shYenile(); return; }
+    try {
+      var u = "https://api.open-meteo.com/v1/forecast?latitude=" + y.lat + "&longitude=" + y.lon +
+        "&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m,is_day" +
+        "&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max,wind_gusts_10m_max" +
+        "&timezone=auto&forecast_days=3&wind_speed_unit=kmh";
+      var r = await fetch(u, { cache: "no-store" }); if (!r.ok) throw new Error("HTTP " + r.status);
+      var j = await r.json(); j.t = Date.now(); j.yer = y.ad; HAVA = j; LS.set("hava_son", j);
+    } catch (e) { /* internet yoksa son bilinen veri gösterilir */ }
+    shYenile();
+  }
+  havaGetir(); HAVA_T = setInterval(function () { havaGetir(); }, 15 * 60000);
+  function openHava() {
+    var y = havaYer();
+    var m = modal({ size: "orta", head: "<h2>Hava durumu · " + esc(y.ad) + "</h2>", body: '<div id="hv"></div>', focus: false,
+      foot: '<button class="btn" id="hv-yer">📍 Konumu değiştir</button><button class="btn" id="hv-yen">↻ Yenile</button><button class="btn ana" data-x>Kapat</button>' });
+    function ciz() {
+      var el = m.q("#hv");
+      if (!HAVA || !HAVA.current) { el.innerHTML = "<p>Hava durumu alınamadı. İnternet bağlantısını kontrol edin.</p>"; return; }
+      var c = HAVA.current, w = wmo(c.weather_code, !c.is_day), dl = HAVA.daily;
+      var h = '<div class="hava-simdi"><div class="ik">' + w[0] + '</div><div><div class="der">' + Math.round(c.temperature_2m) + "°C</div><div>" + w[1] + " · Hissedilen " + Math.round(c.apparent_temperature) + "°C</div></div></div>" +
+        '<p style="margin:10px 0 0">💨 Rüzgar: <b>' + Math.round(c.wind_speed_10m) + " km/sa</b> " + yon(c.wind_direction_10m) + " · Ani rüzgar (hamle): <b" + (c.wind_gusts_10m >= RUZGAR_SINIR ? ' class="ruzgar-uyari"' : "") + ">" + Math.round(c.wind_gusts_10m) + " km/sa</b> · Nem: %" + Math.round(c.relative_humidity_2m) + "</p>";
+      if (c.wind_gusts_10m >= RUZGAR_SINIR) h += '<p class="ruzgar-uyari" style="margin:6px 0 0">⚠ Kuvvetli rüzgar: vinç ve yüksekte çalışma öncesi kontrol edin.</p>';
+      h += '<div class="hava-kart">';
+      for (var i = 0; i < dl.time.length; i++) {
+        var dw = wmo(dl.weather_code[i]), dt = new Date(dl.time[i] + "T12:00:00");
+        h += '<div class="hava-gun"><div style="font-weight:600">' + (i === 0 ? "Bugün" : GUN[dt.getDay()]) + " " + dt.getDate() + " " + AY[dt.getMonth()] + '</div><div class="ik">' + dw[0] + "</div><div>" + dw[1] + '</div><div class="sic">' + Math.round(dl.temperature_2m_max[i]) + "° / " + Math.round(dl.temperature_2m_min[i]) + "°</div>" +
+          '<div class="soluk">☔ %' + (dl.precipitation_probability_max[i] == null ? "—" : dl.precipitation_probability_max[i]) + "</div><div" + (dl.wind_gusts_10m_max[i] >= RUZGAR_SINIR ? ' class="ruzgar-uyari"' : ' class="soluk"') + ">💨 " + Math.round(dl.wind_speed_10m_max[i]) + " / hamle " + Math.round(dl.wind_gusts_10m_max[i]) + " km/sa</div></div>";
+      }
+      h += '</div><p class="soluk" style="margin-bottom:0;font-size:11px">Son güncelleme: ' + trDateTime(new Date(HAVA.t).toISOString()) + " · Kaynak: Open-Meteo</p>";
+      el.innerHTML = h;
+    }
+    ciz();
+    m.q("#hv-yen").onclick = async function () { var b = this; b.disabled = true; await havaGetir(true); ciz(); b.disabled = false; };
+    m.q("#hv-yer").onclick = function () {
+      var el = m.q("#hv");
+      el.innerHTML = '<div class="alan"><label>Şehir / ilçe ara</label><div style="display:flex;gap:8px"><input id="hv-q" placeholder="ör. Aliağa" style="flex:1"><button class="btn ana" id="hv-ara">Ara</button></div></div><div id="hv-son" style="margin-top:10px"></div>' +
+        '<p class="soluk" style="margin-bottom:0">Konum sadece bu cihazda saklanır. <a href="#" id="hv-sifir">Varsayılana dön (Aliağa)</a></p>';
+      var q = el.querySelector("#hv-q"); setTimeout(function () { q.focus(); }, 30);
+      async function ara() {
+        var son = el.querySelector("#hv-son"); son.innerHTML = '<span class="soluk">Aranıyor…</span>';
+        try {
+          var r = await fetch("https://geocoding-api.open-meteo.com/v1/search?count=6&language=tr&name=" + encodeURIComponent(q.value.trim()));
+          var j = await r.json(), L = j.results || [];
+          son.innerHTML = L.length ? L.map(function (x, i) { return '<button class="btn" style="display:flex;width:100%;margin-bottom:6px;justify-content:flex-start" data-i="' + i + '">📍 ' + esc(x.name) + ' <span class="soluk">' + esc([x.admin1, x.country].filter(Boolean).join(", ")) + "</span></button>"; }).join("") : "Sonuç bulunamadı.";
+          son.onclick = async function (e) { var b = e.target.closest("[data-i]"); if (!b) return; var x = L[+b.getAttribute("data-i")]; LS.set("hava_yer", { ad: x.name, lat: x.latitude, lon: x.longitude }); m.close(); await havaGetir(true); openHava(); };
+        } catch (e) { son.innerHTML = "Arama yapılamadı (internet bağlantısı?)."; }
+      }
+      el.querySelector("#hv-ara").onclick = ara; q.addEventListener("keydown", function (e) { if (e.key === "Enter") ara(); });
+      el.querySelector("#hv-sifir").onclick = async function (e) { e.preventDefault(); try { localStorage.removeItem("ypp_hava_yer"); } catch (x) {} m.close(); await havaGetir(true); openHava(); };
+    };
   }
   /* ---------- kaydet (panel dosyası) ---------- */
   function idb(cb) {

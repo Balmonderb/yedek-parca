@@ -326,6 +326,18 @@ html[data-tema="endustri"] table.liste th { background: #3b474e; }
 html[data-tema="endustri"] .btn.vurgu { color: #2a2000; }
 html[data-tema="endustri"] #giris { background: linear-gradient(160deg, #2f3a40 0%, #46555c 55%, #2f7f8f 100%); }
 html[data-tema="endustri"] .ust { border-bottom: 4px solid transparent; border-image: repeating-linear-gradient(-45deg, #f2b705 0 12px, #2f3a40 12px 24px) 4; }
+
+/* ---- sistem numaraları ---- */
+.sis-no { display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 20px; padding: 0 5px; margin-right: 6px; border-radius: 10px; background: var(--brand-soft); color: var(--brand2); font-weight: 700; font-size: 11px; font-variant-numeric: tabular-nums; vertical-align: 1px; }
+.sis-tik { cursor: pointer; border-radius: 4px; }
+.sis-tik:hover .sis-ad { text-decoration: underline; text-decoration-style: dotted; }
+.sis-tik.secili .sis-no { background: var(--brand2); color: #fff; }
+.sis-sec { display: inline-flex; align-items: center; gap: 6px; border: 1.5px solid var(--line); border-radius: 16px; padding: 2px 4px 2px 10px; background: var(--surface); font-size: 12px; font-weight: 600; color: var(--muted); }
+.sis-sec.aktif { border-color: var(--brand2); background: var(--brand-soft); color: var(--brand2); }
+.sis-sec select { border: 0; background: transparent; font-weight: 700; color: var(--ink); max-width: 340px; padding: 3px 2px; font-size: 12px; }
+.sis-sec .sis-x { border: 0; background: var(--brand2); color: #fff; border-radius: 50%; width: 20px; height: 20px; line-height: 18px; padding: 0; font-weight: 700; }
+html[data-tema="gece"] .sis-sec select option { background: #172235; }
+@media (max-width: 720px) { .sis-sec select { max-width: 210px; font-size: 16px; } }
 /* ---- mobil / PWA ---- */
 #uygulama { height: 100vh; height: 100dvh; }
 .ust { padding-top: max(10px, env(safe-area-inset-top)); padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); }
@@ -1245,7 +1257,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
   "use strict";
   var C = window.Core, Seal = window.Seal;
   var MK = "/*" + "V*/";
-  var SURUM = "Sürüm 2026-11-09c · PWA";
+  var SURUM = "Sürüm 2026-11-09d · PWA";
 
   /* ---------- şablon (kendini kaydetmek için) ---------- */
   var TEMPLATE = (function () {
@@ -1272,7 +1284,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
 
   /* ---------- durum ---------- */
   var S = null, ROLE = null, KEYS = {}, R = null, DIRTY = false, PW_NEW = {};
-  var UI = { sheet: 0, q: "", chip: null, sortK: null, sortD: 1, page: 0, size: 100, edit: false, sel: {} };
+  var UI = { sheet: 0, sys: null, sysSheet: -1, q: "", chip: null, sortK: null, sortD: 1, page: 0, size: 100, edit: false, sel: {} };
   var LS = {
     get: function (k, d) { try { var v = localStorage.getItem("ypp_" + k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
     set: function (k, v) { try { localStorage.setItem("ypp_" + k, JSON.stringify(v)); } catch (e) {} }
@@ -1541,10 +1553,12 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
   }
   function terms() { var t = C.trim(C.fold(UI.q)); return t ? t.split(/\s+/) : []; }
   function matchQ(i, T) { if (!T.length) return true; var s = searchText(i); for (var j = 0; j < T.length; j++) if (s.indexOf(T[j]) < 0) return false; return true; }
-  function rowsOf(si, withChip) {
+  function rowsOf(si, withChip, noSys) {
     var T = terms(), out = [], ch = withChip && UI.chip ? CHIPS.filter(function (c) { return c.k === UI.chip; })[0] : null;
+    var sy = !noSys && UI.sys !== null && UI.sysSheet === si ? UI.sys : null;
     for (var i = 0; i < S.items.length; i++) {
       if (S.items[i].s !== si) continue;
+      if (sy !== null && (S.items[i].sis || "") !== sy) continue;
       if (ch && !ch.f(R.D[i])) continue;
       if (!matchQ(i, T)) continue;
       out.push(i);
@@ -1554,7 +1568,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
   function renderTabs() {
     var h = [];
     visibleSheets().forEach(function (si) {
-      var n = rowsOf(si, false).length;
+      var n = rowsOf(si, false, true).length;
       h.push('<button class="sekme' + (si === UI.sheet ? " aktif" : "") + (UI.q && !n ? " bos" : "") + '" data-s="' + si + '">' + esc(S.sheets[si].name) + '<span class="say">' + fmt(n) + "</span></button>");
     });
     if (admin()) h.push('<button class="sekme yeni-sekme" id="sekme-ekle" title="Yeni sayfa ekle">＋ Sayfa</button>');
@@ -1567,6 +1581,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
     };
   }
   function renderChips() {
+    sisDogrula();
     var base = rowsOf(UI.sheet, false), h = [];
     CHIPS.forEach(function (c) {
       if (c.on && !c.on()) return;
@@ -1575,8 +1590,11 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
       if (!n && UI.chip !== c.k) return;
       h.push('<button class="cip ' + c.c + (UI.chip === c.k ? " secili" : "") + '" data-c="' + c.k + '">' + c.t + "<b>" + fmt(n) + "</b></button>");
     });
-    $("cipler").innerHTML = h.join("") || (viewCfg().chips[admin() ? "admin" : "user"].length ? '<span class="soluk">Bu sayfada işaretli kalem yok.</span>' : "");
+    $("cipler").innerHTML = sisSecHtml() + (h.join("") || (viewCfg().chips[admin() ? "admin" : "user"].length ? '<span class="soluk">Bu sayfada işaretli kalem yok.</span>' : ""));
+    var ss = $("sis-sec");
+    if (ss) ss.onchange = function () { sisSec(this.value === "" ? null : SIS_LISTE[+this.value]); };
     $("cipler").onclick = function (e) {
+      if (e.target.closest(".sis-x")) { sisSec(null); return; }
       var b = e.target.closest(".cip"); if (!b) return;
       var k = b.getAttribute("data-c"); UI.chip = UI.chip === k ? null : k; UI.page = 0; renderChips(); renderTable();
     };
@@ -1660,7 +1678,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
       return { v: '<input class="hc" data-f="' + esc(c.k) + '" value="' + esc(val) + '"' + al + (c.n ? ' inputmode="decimal"' : "") + ">", cls: "ed" };
     }
     switch (c.k) {
-      case "sis": v = esc(it.sis); break;
+      case "sis": if (it.sis) { var no = sisNo(it.s)[it.sis]; v = '<span class="sis-tik' + (UI.sys === it.sis && UI.sysSheet === it.s ? " secili" : "") + '" data-sys="' + esc(it.sis) + '" title="Sadece bu sistemi göster (tekrar tıklayınca hepsi)"><span class="sis-no">' + no + '</span><span class="sis-ad">' + esc(it.sis) + "</span></span>"; } break;
       case "kod":
         if (it.kod) {
           var tt = "Detay için tıkla" + (d.ciz ? " · Çizim No: " + d.ciz : "");
@@ -2380,9 +2398,9 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
           '<div class="alan" style="max-width:320px;margin-bottom:10px"><label for="sy-s">Sayfa</label><select id="sy-s">' +
           S.sheets.map(function (sh, j) { return '<option value="' + j + '"' + (j === si ? " selected" : "") + ">" + esc(sh.name) + "</option>"; }).join("") + "</select></div>" +
           '<div style="margin-bottom:10px"><button class="btn kucuk ana" id="sy-yeni">＋ Yeni sistem</button></div>' +
-          '<table class="mini kisi-tablo"><tr><th>Sistem adı</th><th style="text-align:right;width:70px">Kalem</th><th style="width:90px"></th></tr>' +
+          '<table class="mini kisi-tablo"><tr><th style="width:44px;text-align:center">No</th><th>Sistem adı</th><th style="text-align:right;width:70px">Kalem</th><th style="width:90px"></th></tr>' +
           order.map(function (k, j) {
-            return '<tr><td><input data-j="' + j + '" value="' + esc(k) + '" placeholder="(sistem adı boş)"></td><td style="text-align:right">' + cnt[k] +
+            return '<tr><td style="text-align:center;vertical-align:middle">' + (k ? '<span class="sis-no" style="margin:0">' + (order.filter(function (x) { return x; }).indexOf(k) + 1) + "</span>" : "") + '</td><td><input data-j="' + j + '" value="' + esc(k) + '" placeholder="(sistem adı boş)"></td><td style="text-align:right">' + cnt[k] +
               '</td><td><button class="btn kucuk ana" data-rn="' + j + '">Değiştir</button></td></tr>';
           }).join("") + "</table>";
         ic.querySelector("#sy-s").onchange = function () { si = +this.value; draw(); };
@@ -3105,6 +3123,38 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
       } catch (e) { if (!e || e.name !== "AbortError") toast(e && e.message ? e.message : String(e), "kotu"); }
     };
   }
+
+  /* ---------- sistem numaraları + sistem filtresi ---------- */
+  var SIS_LISTE = [];
+  function sisListe(si) { var seen = {}, o = []; S.items.forEach(function (x) { if (x.s === si && x.sis && !seen[x.sis]) { seen[x.sis] = 1; o.push(x.sis); } }); return o; }
+  function sisNo(si) {
+    var key = si + "|" + S.items.length + "|" + (sisNo.v || 0);
+    if (sisNo.k !== key) { sisNo.k = key; sisNo.m = {}; sisListe(si).forEach(function (n, j) { sisNo.m[n] = j + 1; }); }
+    return sisNo.m;
+  }
+  function sisDogrula() {
+    sisNo.v = (sisNo.v || 0) + 1; // her çizimde numaraları tazele (yeniden adlandırma, ekleme)
+    if (UI.sys !== null && (UI.sysSheet !== UI.sheet || sisListe(UI.sheet).indexOf(UI.sys) < 0)) { UI.sys = null; UI.sysSheet = -1; }
+  }
+  function sisSecHtml() {
+    SIS_LISTE = sisListe(UI.sheet);
+    if (SIS_LISTE.length < 2) return "";
+    var cnt = {}; S.items.forEach(function (x) { if (x.s === UI.sheet && x.sis) cnt[x.sis] = (cnt[x.sis] || 0) + 1; });
+    var on = UI.sys !== null;
+    return '<label class="sis-sec' + (on ? " aktif" : "") + '" title="Numarasına göre tek bir sistemi göster">Sistem <select id="sis-sec"><option value="">Tümü (' + SIS_LISTE.length + " sistem)</option>" +
+      SIS_LISTE.map(function (n, j) { return '<option value="' + j + '"' + (UI.sys === n ? " selected" : "") + ">" + (j + 1) + ". " + esc(n) + " (" + cnt[n] + ")</option>"; }).join("") +
+      "</select>" + (on ? '<button type="button" class="sis-x" title="Tüm sistemleri göster">×</button>' : "") + "</label>";
+  }
+  function sisSec(ad) {
+    UI.sys = ad; UI.sysSheet = ad === null ? -1 : UI.sheet; UI.page = 0;
+    renderChips(); renderTable();
+    var k = $("tablo-kap"); if (k) k.scrollTop = 0;
+  }
+  document.addEventListener("click", function (e) {
+    var t = e.target.closest && e.target.closest("#tablo-kap .sis-tik"); if (!t || editing()) return;
+    var ad = t.getAttribute("data-sys");
+    sisSec(UI.sys === ad && UI.sysSheet === UI.sheet ? null : ad);
+  });
   /* ---------- kaydet (panel dosyası) ---------- */
   function idb(cb) {
     try { var rq = indexedDB.open("yedek-parca-paneli", 1); rq.onupgradeneeded = function () { rq.result.createObjectStore("h"); }; rq.onsuccess = function () { cb(rq.result); }; rq.onerror = function () { cb(null); }; }

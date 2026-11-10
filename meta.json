@@ -1,6 +1,13 @@
 {
  "erpDate": "2026-11-02T11:16:16.828Z",
  "satDate": "2026-11-02T11:16:16.828Z",
- "savedAt": "2026-11-09T07:01:55.879Z",
- "initPw": false
+ "savedAt": "2026-11-10T09:45:32.632Z",
+ "initPw": false,
+ "gorunum": {
+  "ad": "",
+  "alt": "",
+  "harf": "",
+  "logo": "",
+  "tema": "klasik"
+ }
 }

@@ -1,6 +1,6 @@
 /* Yedek Parça Paneli — service worker
    Her zaman önce internetten en güncelini dener; bağlantı yoksa son kopyayı açar. */
-const CACHE = "ypp-v1";
+const CACHE = "ypp-v3";
 const SHELL = ["./", "./index.html", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png"];
 
 self.addEventListener("install", (e) => {
@@ -16,11 +16,14 @@ self.addEventListener("fetch", (e) => {
   if (url.origin !== self.location.origin) return; // GitHub API vb. dokunma
   const key = url.pathname.endsWith("/veri.json") || url.pathname.endsWith("/meta.json") ? url.origin + url.pathname : req;
   e.respondWith(
-    fetch(req).then((res) => {
+    fetch(req, { cache: "no-cache" }).then((res) => {
       if (res && res.ok) { const copy = res.clone(); caches.open(CACHE).then((c) => c.put(key, copy)); }
       return res;
     }).catch(() =>
-      caches.match(key, { ignoreSearch: true }).then((r) => r || (req.mode === "navigate" ? caches.match("./index.html") : undefined))
+      caches.match(key, { ignoreSearch: true }).then((r) => {
+        if (r) { const h = new Headers(r.headers); h.set("X-YP-Cache", "1"); return new Response(r.body, { status: r.status, statusText: r.statusText, headers: h }); }
+        return req.mode === "navigate" ? caches.match("./index.html") : undefined;
+      })
         .then((r) => r || new Response("Çevrimdışı", { status: 503, statusText: "offline" }))
     )
   );

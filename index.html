@@ -1257,7 +1257,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
   "use strict";
   var C = window.Core, Seal = window.Seal;
   var MK = "/*" + "V*/";
-  var SURUM = "Sürüm 2026-11-09d · PWA";
+  var SURUM = "Sürüm 2026-11-11 · PWA";
 
   /* ---------- şablon (kendini kaydetmek için) ---------- */
   var TEMPLATE = (function () {
@@ -1271,14 +1271,47 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
   rawEnv = null; pe = null; veriEl.textContent = "";
   /* Web'den (GitHub Pages) açıldıysa güncel veri veri.json'dan okunur; dosyadan açıldıysa gömülü veri kullanılır */
   var WEB = /^https?:$/.test(location.protocol);
+  /* Veri kaynağı: 1) GitHub deposu, son commit (her zaman en güncel)  2) GitHub Pages kopyası  3) çevrimdışı kopya / gömülü veri */
+  var GH_SRC = (function () {
+    var m = /^([^.]+)\.github\.io$/i.exec(location.hostname);
+    if (m) { var r = decodeURIComponent(location.pathname.split("/")[1] || ""); if (!r || /\.html?$/i.test(r)) r = m[1] + ".github.io"; return { owner: m[1], repo: r, branch: "main" }; }
+    var g = ENV && ENV.meta && ENV.meta.gh; return g && g.owner && g.repo ? g : null;
+  })();
+  var VERI_KAYNAK = ENV ? "dosya" : "";
   var READY = (async function () {
-    if (!WEB) { if (!ENV) throw new Error("Panel verisi bulunamadı"); return; }
-    try {
-      var r = await fetch("veri.json?t=" + Date.now(), { cache: "no-store" });
-      if (!r.ok) throw new Error("veri.json okunamadı (HTTP " + r.status + ")");
-      var j = await r.json();
-      if (j && j.A && (!ENV || ((j.meta || {}).savedAt || "") >= ((ENV.meta || {}).savedAt || ""))) ENV = j;
-    } catch (e) { if (!ENV) throw e; }
+    function sa(e) { return (e && e.meta && e.meta.savedAt) || ""; }
+    async function getJ(url) { var r = await fetch(url, { cache: "no-store" }); if (!r.ok) throw new Error("HTTP " + r.status); return { j: await r.json(), cache: r.headers.get("X-YP-Cache") === "1" }; }
+    var gh = null, pagesMeta = null;
+    var pMeta = WEB ? getJ("meta.json?t=" + Date.now()).then(function (x) { pagesMeta = x; }, function () {}) : Promise.resolve();
+    if (GH_SRC) {
+      try {
+        var c = await fetch("https://api.github.com/repos/" + encodeURIComponent(GH_SRC.owner) + "/" + encodeURIComponent(GH_SRC.repo) + "/commits/" + encodeURIComponent(GH_SRC.branch || "main"), { cache: "no-store", headers: { Accept: "application/vnd.github.sha" } });
+        var sha = c.ok ? C.trim(await c.text()) : "";
+        if (/^[0-9a-f]{40}$/.test(sha)) {
+          var base = "https://raw.githubusercontent.com/" + encodeURIComponent(GH_SRC.owner) + "/" + encodeURIComponent(GH_SRC.repo) + "/" + sha + "/";
+          var gm = (await getJ(base + "meta.json")).j;
+          gh = { base: base, savedAt: (gm && gm.savedAt) || "" };
+        }
+      } catch (e) { gh = null; }
+    }
+    await pMeta;
+    var pagesSa = pagesMeta && pagesMeta.j ? pagesMeta.j.savedAt || "" : "";
+    var adaylar = [];
+    // GitHub deposu daha yeniyse (ya da Pages okunamadıysa) oradan; değilse Pages'ten indir
+    if (gh && gh.savedAt && gh.savedAt > sa(ENV) && (!pagesSa || gh.savedAt > pagesSa || (pagesMeta && pagesMeta.cache))) adaylar.push(["github", gh.base + "veri.json"]);
+    if (WEB) adaylar.push(["pages", "veri.json?t=" + Date.now()]);
+    if (!WEB && gh && !adaylar.length && gh.savedAt > sa(ENV)) adaylar.push(["github", gh.base + "veri.json"]);
+    var sonHata = null;
+    for (var i = 0; i < adaylar.length; i++) {
+      try {
+        var x = await getJ(adaylar[i][1]);
+        if (!x.j || !x.j.A) throw new Error("geçersiz veri");
+        if (!ENV || sa(x.j) >= sa(ENV)) { ENV = x.j; VERI_KAYNAK = x.cache ? "cache" : adaylar[i][0]; }
+        break;
+      } catch (e) { sonHata = e; }
+    }
+    if (!ENV) throw sonHata || new Error("Panel verisi bulunamadı");
+    if (gh && gh.savedAt > sa(ENV)) VERI_KAYNAK = "eski";
   })();
   if (WEB && "serviceWorker" in navigator) { try { navigator.serviceWorker.register("sw.js").catch(function () {}); } catch (e) {} }
 
@@ -1343,7 +1376,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
     h += '<div class="satir"><span class="soluk" style="font-size:11px">' + SURUM + "</span><span></span></div>";
     $("giris-bilgi").innerHTML = h;
   }
-  READY.then(function () { girisBilgi(); girisGorunum(); }, function (e) { $("giris-bilgi").innerHTML = '<div class="uyari-kutu">⚠ ' + esc(e && e.message ? e.message : e) + "<br>İnternet bağlantısını kontrol edip sayfayı yenileyin.</div>"; });
+  READY.then(function () { girisBilgi(); girisGorunum(); kaynakNotu(); }, function (e) { $("giris-bilgi").innerHTML = '<div class="uyari-kutu">⚠ ' + esc(e && e.message ? e.message : e) + "<br>İnternet bağlantısını kontrol edip sayfayı yenileyin.</div>"; });
   $("giris-form").addEventListener("submit", async function (e) {
     e.preventDefault();
     var pw = $("sifre").value; if (!pw) return;
@@ -1521,6 +1554,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
     if (e1 >= 7) w.push("IEB " + e1 + " gündür"); if (e2 >= 7) w.push("IZE " + e2 + " gündür"); if (e3 >= 7) w.push("satınalma " + e3 + " gündür");
     if (w.length) b.push('<div class="bant ' + (Math.max(e1, e2, e3) >= 9 ? "kirmizi" : "sari") + '">⏰ Hatırlatma: ' + w.join(", ") + " güncellenmedi." + (admin() ? ' <button class="btn kucuk" data-act="yukle">Dosya yükle</button>' : "") + "</div>");
     if (admin() && m.initPw && !PW_NEW.admin) b.push('<div class="bant mavi">🔑 İlk kurulum şifreleri kullanılıyor. <button class="btn kucuk ana" data-act="sifre">Şifreleri değiştir</button></div>');
+    if (VERI_KAYNAK === "cache" || VERI_KAYNAK === "eski") b.unshift('<div class="bant sari">📴 GitHub\'daki güncel veriye ulaşılamadı; bu cihazdaki son kopya gösteriliyor. İnternet bağlantısını kontrol edip paneli yeniden açın. <b>Bu durumda değişiklik yüklemeyin.</b></div>');
     $("bantlar").innerHTML = b.join(""); bitenRozet();
     $("bantlar").onclick = function (e) {
       var x = e.target.closest("[data-act]"); if (!x) return;
@@ -2737,11 +2771,11 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
         { path: "veri.json", mode: "100644", type: "blob", sha: b1.sha }, { path: "meta.json", mode: "100644", type: "blob", sha: b2.sha }] });
       var nc = await ghApi(tok, "POST", P + "/git/commits", { message: "Panel verisi güncellendi · " + trDateTime(meta.savedAt), tree: tr.sha, parents: [head] });
       await ghApi(tok, "PATCH", P + "/git/refs/heads/" + br, { sha: nc.sha });
-      ENV = out.env; PW_NEW = {}; DIRTY = false;
+      ENV = out.env; PW_NEW = {}; DIRTY = false; VERI_KAYNAK = "github";
       if (ELEV) USER_BACKUP = C.makeUserState(JSON.parse(JSON.stringify(S, function (k, v) { return k === "_s" ? undefined : v; })));
       busy(""); renderBanners();
       var m = modal({ size: "dar", head: "<h2>GitHub'a yüklendi ✓</h2>",
-        body: "<p style='margin-top:0'>Veri <b>" + esc(cfg.owner + "/" + cfg.repo) + "</b> deposuna gönderildi.</p><p>GitHub Pages yayını genelde <b>1–2 dakika</b> sürer; sonra diğer cihazlarda paneli yeniden açınca güncel veri gelir.</p><p class='soluk' style='margin-bottom:0'>İsterseniz Excel yedeğini de alın.</p>",
+        body: "<p style='margin-top:0'>Veri <b>" + esc(cfg.owner + "/" + cfg.repo) + "</b> deposuna gönderildi.</p><p>Diğer cihazlarda paneli yeniden açınca güncel veri hemen gelir.</p><p class='soluk' style='margin-bottom:0'>İsterseniz Excel yedeğini de alın.</p>",
         foot: '<button class="btn" data-x>Tamam</button><button class="btn ana" id="xl">⬇ Excel yedeği</button>' });
       m.q("#xl").onclick = function () { m.close(); exportExcel(); };
     } catch (err) {
@@ -3155,6 +3189,12 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
     var ad = t.getAttribute("data-sys");
     sisSec(UI.sys === ad && UI.sysSheet === UI.sheet ? null : ad);
   });
+
+  function kaynakNotu() {
+    var el = $("giris-bilgi"); if (!el) return;
+    var t = { github: "☁ Veri GitHub'dan alındı (güncel)", pages: "☁ Veri GitHub Pages'ten alındı", cache: "📴 Çevrimdışı: bu cihazdaki son kopya", eski: "⚠ GitHub'daki güncel veriye ulaşılamadı; eski kopya", dosya: GH_SRC ? "📄 Dosyadaki veri (GitHub'a ulaşılamadı)" : "📄 Dosyadaki veri" }[VERI_KAYNAK];
+    if (t) el.insertAdjacentHTML("beforeend", '<div class="soluk" style="font-size:11.5px;margin-top:6px">' + t + "</div>");
+  }
   /* ---------- kaydet (panel dosyası) ---------- */
   function idb(cb) {
     try { var rq = indexedDB.open("yedek-parca-paneli", 1); rq.onupgradeneeded = function () { rq.result.createObjectStore("h"); }; rq.onsuccess = function () { cb(rq.result); }; rq.onerror = function () { cb(null); }; }
@@ -3172,6 +3212,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
     var meta = {
       erpDate: [S.erp.IEB && S.erp.IEB.date, S.erp.IZE && S.erp.IZE.date].filter(Boolean).sort()[0] || "",
       satDate: S.sat ? S.sat.date : "", savedAt: new Date().toISOString(), initPw: !!(ENV.meta && ENV.meta.initPw) && !PW_NEW.admin,
+      gh: (function () { var c = ghCfg(); return c.owner && c.repo ? { owner: c.owner, repo: c.repo, branch: c.branch || "main" } : (GH_SRC || null); })(),
       gorunum: { ad: G().ad || "", alt: G().alt || "", harf: G().harf || "", logo: G().logo || "", tema: G().tema || "" }
     };
     var clean = JSON.parse(JSON.stringify(S, function (k, v) { return k === "_s" ? undefined : v; }));
